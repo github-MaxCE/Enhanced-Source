@@ -181,28 +181,28 @@ void CHudDamageIndicator::DrawDamageIndicator(int side)
 	CMeshBuilder meshBuilder;
 	meshBuilder.Begin( pMesh, MATERIAL_QUADS, 1 );
 
-	int insetY = (m_flDmgTall1 - m_flDmgTall2) / 2;
+	float insetY = (m_flDmgTall1 - m_flDmgTall2) / 2.0f;
 
-	int x1 = m_flDmgX;
-	int x2 = m_flDmgX + m_flDmgWide;
-	int y[4] = { m_flDmgY, m_flDmgY + insetY, m_flDmgY + m_flDmgTall1 - insetY, m_flDmgY + m_flDmgTall1 };
-	int alpha[4] = { 0.0f, 1.0f, 1.0f, 0.0f };
+	float x1 = m_flDmgX;
+	float x2 = m_flDmgX + m_flDmgWide;
+	float y[4] = { m_flDmgY, m_flDmgY + insetY, m_flDmgY + m_flDmgTall1 - insetY, m_flDmgY + m_flDmgTall1 };
+	int alpha[4] = { 0, 1, 1, 0 };
 
 	// see if we're high damage
 	bool bHighDamage = false;
 	if ( m_DmgHighColorRight[3] > m_DmgColorRight[3] || m_DmgHighColorLeft[3] > m_DmgColorLeft[3] )
 	{
 		// make more of the screen be covered by damage
-		x1 = GetWide() * 0.0f;
+		x1 = 0.0f;
 		x2 = GetWide() * 0.5f;
 		y[0] = 0.0f;
 		y[1] = 0.0f;
 		y[2] = GetTall();
 		y[3] = GetTall();
-		alpha[0] = 1.0f;
-		alpha[1] = 0.0f;
-		alpha[2] = 0.0f;
-		alpha[3] = 1.0f;
+		alpha[0] = 1;
+		alpha[1] = 0;
+		alpha[2] = 0;
+		alpha[3] = 1;
 		bHighDamage = true;
 	}
 
