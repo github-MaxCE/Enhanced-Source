@@ -841,6 +841,8 @@ CBreakableProp::CBreakableProp()
 	SetGlobalFadeScale( 1.0f );
 	m_flDefaultFadeScale = 1;
 	m_mpBreakMode = MULTIPLAYER_BREAK_DEFAULT;
+
+	SetPhysicsMode( PHYSICS_MULTIPLAYER_SOLID );
 	
 	// This defaults to on. Most times mapmakers won't specify a punt sound to play.
 	m_bUsePuntSound = true;
