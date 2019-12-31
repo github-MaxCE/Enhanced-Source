@@ -264,6 +264,7 @@ CRopeKeyframe* CRopeKeyframe::CreateWithSecondPointDetached(
 	pRet->m_RopeLength = ropeLength;
 	pRet->m_Width = ropeWidth;
 	pRet->m_nSegments = clamp( numSegments, 2, ROPE_MAX_SEGMENTS );
+	pRet->Spawn();
 
 	return pRet;
 }
