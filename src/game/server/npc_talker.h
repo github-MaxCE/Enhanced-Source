@@ -20,10 +20,6 @@
 #undef min
 #undef max
 #endif
-#pragma warning(push)
-#pragma warning(disable:4005)
-#include <set>
-#pragma warning(pop)
 #endif
 
 #ifdef _WIN32

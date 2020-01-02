@@ -56,12 +56,12 @@ LINK_ENTITY_TO_CLASS( physics_prop_ragdoll, CRagdollProp );
 LINK_ENTITY_TO_CLASS( prop_ragdoll, CRagdollProp );
 EXTERN_SEND_TABLE(DT_Ragdoll)
 
-IMPLEMENT_SERVERCLASS_ST(CRagdollProp, DT_Ragdoll)
-SendPropArray(SendPropQAngles(SENDINFO_ARRAY(m_ragAngles), 13, 0), m_ragAngles),
-SendPropArray(SendPropVector(SENDINFO_ARRAY(m_ragPos), -1, SPROP_COORD), m_ragPos),
-SendPropEHandle(SENDINFO(m_hUnragdoll)),
-SendPropFloat(SENDINFO(m_flBlendWeight), 8, SPROP_ROUNDDOWN, 0.0f, 1.0f),
-SendPropInt(SENDINFO(m_nOverlaySequence), 11),
+IMPLEMENT_SERVERCLASS_ST( CRagdollProp, DT_Ragdoll )
+	SendPropArray( SendPropQAngles( SENDINFO_ARRAY( m_ragAngles ), 13, 0 ), m_ragAngles ),
+	SendPropArray( SendPropVector( SENDINFO_ARRAY( m_ragPos ), -1, SPROP_COORD ), m_ragPos ),
+	SendPropEHandle( SENDINFO( m_hUnragdoll ) ),
+	SendPropFloat( SENDINFO( m_flBlendWeight ), 8, SPROP_ROUNDDOWN, 0.0f, 1.0f ),
+	SendPropInt( SENDINFO( m_nOverlaySequence ), 11 ),
 END_SEND_TABLE()
 
 

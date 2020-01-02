@@ -6,10 +6,6 @@
 //=============================================================================//
 
 #include "cbase.h"
-#pragma warning(push)
-#pragma warning(disable:4005)
-#include <limits.h>
-#pragma warning(pop)
 #include "isaverestore.h"
 #include "saverestore.h"
 #include <stdarg.h>

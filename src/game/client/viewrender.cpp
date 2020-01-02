@@ -1593,8 +1593,19 @@ void GetFogColorTransition( fogparams_t *pFogParams, float *pColorPrimary, float
 	{
 		float flPercent = 1.0f - (( pFogParams->lerptime - gpGlobals->curtime ) / pFogParams->duration );
 
-		float flPrimaryColorLerp[3] = { (float)pFogParams->colorPrimaryLerpTo.GetR(),  (float)pFogParams->colorPrimaryLerpTo.GetG(),  (float)pFogParams->colorPrimaryLerpTo.GetB() };
-		float flSecondaryColorLerp[3] = { (float)pFogParams->colorSecondaryLerpTo.GetR(),  (float)pFogParams->colorSecondaryLerpTo.GetG(),  (float)pFogParams->colorSecondaryLerpTo.GetB() };
+		float flPrimaryColorLerp[3] =
+		{
+			float(pFogParams->colorPrimaryLerpTo.GetR()),
+			float(pFogParams->colorPrimaryLerpTo.GetG()),
+			float(pFogParams->colorPrimaryLerpTo.GetB())
+		};
+
+		float flSecondaryColorLerp[3] =
+		{
+			float(pFogParams->colorSecondaryLerpTo.GetR()),
+			float(pFogParams->colorSecondaryLerpTo.GetG()),
+			float(pFogParams->colorSecondaryLerpTo.GetB())
+		};
 
 		CheckAndTransitionColor( flPercent, pColorPrimary, flPrimaryColorLerp );
 		CheckAndTransitionColor( flPercent, pColorSecondary, flSecondaryColorLerp );
@@ -1630,8 +1641,19 @@ void GetFogColor( fogparams_t *pFogParams, float *pColor, bool ignoreOverride, b
 
 	if( (pColor[0] == -1.0f) && (pColor[1] == -1.0f) && (pColor[2] == -1.0f) ) //if not overriding fog, or if we get non-overridden fog color values
 	{
-		float flPrimaryColor[3] = { (float)pFogParams->colorPrimary.GetR(),  (float)pFogParams->colorPrimary.GetG(),  (float)pFogParams->colorPrimary.GetB() };
-		float flSecondaryColor[3] = { (float)pFogParams->colorSecondary.GetR(),  (float)pFogParams->colorSecondary.GetG(),  (float)pFogParams->colorSecondary.GetB() };
+		float flPrimaryColor[3] =
+		{
+			float(pFogParams->colorPrimary.GetR()),
+			float(pFogParams->colorPrimary.GetG()),
+			float(pFogParams->colorPrimary.GetB())
+		};
+
+		float flSecondaryColor[3] =
+		{
+			float(pFogParams->colorSecondary.GetR()),
+			float(pFogParams->colorSecondary.GetG()),
+			float(pFogParams->colorSecondary.GetB())
+		};
 
 		GetFogColorTransition( pFogParams, flPrimaryColor, flSecondaryColor );
 
