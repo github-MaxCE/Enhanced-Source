@@ -319,24 +319,25 @@ ModelInstanceHandle_t C_PortalGhostRenderable::GetModelInstance()
 	return BaseClass::GetModelInstance();
 }
 
+RenderableTranslucencyType_t C_PortalGhostRenderable::ComputeTranslucencyType( void ) 
+{ 
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
 
+	if ( pGhostedRenderable == NULL )
+		return RENDERABLE_IS_OPAQUE;
 
-/*
-bool C_PortalGhostRenderable::IsTransparent( void )
-{
-	if( m_pGhostedRenderable == NULL )
-		return false;
-
-	return m_pGhostedRenderable->IsTransparent();
+	return pGhostedRenderable->ComputeTranslucencyType();
 }
 
-bool C_PortalGhostRenderable::UsesPowerOfTwoFrameBufferTexture()
+int C_PortalGhostRenderable::GetRenderFlags()
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if(pGhostedRenderable == NULL )
 		return false;
 
-	return m_pGhostedRenderable->UsesPowerOfTwoFrameBufferTexture();
-}*/
+	return pGhostedRenderable->GetRenderFlags();
+}
 
 /*const model_t* C_PortalGhostRenderable::GetModel( ) const
 {

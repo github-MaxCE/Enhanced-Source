@@ -84,8 +84,8 @@ public:
 	//IClientRenderable - Trivial or redirection
 	//------------------------------------------
 	virtual IClientUnknown*			GetIClientUnknown() { return this; };
-	//virtual bool					IsTransparent( void );
-	//virtual bool					UsesPowerOfTwoFrameBufferTexture();
+	virtual RenderableTranslucencyType_t	ComputeTranslucencyType( void );
+	virtual int						GetRenderFlags();
 	//virtual ClientShadowHandle_t	GetShadowHandle() const { return m_hShadowHandle; };
 	//virtual ClientRenderHandle_t&	RenderHandle() { return m_hRenderHandle; };
 	//virtual const model_t*			GetModel( ) const;
