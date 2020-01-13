@@ -52,7 +52,6 @@ void C_PortalGhostRenderable::PerFrameUpdate( void )
 		}
 	}
 
-	SetSolid(SOLID_VPHYSICS);
 	SetSize(m_pGhostedRenderable->CollisionProp()->OBBMins(), m_pGhostedRenderable->CollisionProp()->OBBMaxs());
 
 	// Set position and angles relative to the object it's ghosting
@@ -65,10 +64,6 @@ void C_PortalGhostRenderable::PerFrameUpdate( void )
 	SetNetworkAngles( qNewAngles );
 	SetLocalAngles( qNewAngles );
 	SetAbsAngles( qNewAngles );
-
-	AddEffects( EF_NOINTERP );
-
-//	RemoveFromInterpolationList();
 
 	g_pClientLeafSystem->RenderableChanged( RenderHandle() );
 }
