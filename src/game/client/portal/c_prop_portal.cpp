@@ -409,7 +409,6 @@ bool C_Prop_Portal::Simulate()
 				bIsHeldWeapon = true;
 
 
-			// TODO(Joshua): Check me!
 			C_PortalGhostRenderable *pNewGhost = new C_PortalGhostRenderable( this,
 																				pRenderable, 
 																				m_matrixThisToLinked, 
@@ -418,7 +417,8 @@ bool C_Prop_Portal::Simulate()
 			Assert( pNewGhost );
 
 			bStillInUse[ m_GhostRenderables.AddToTail( pNewGhost ) ] = true;
-			pNewGhost->PerFrameUpdate();
+			
+			pNewGhost->InitializeAsClientEntity( pEntity->GetModelName(), false );
 
 			// HACK - I just copied the CClientTools::OnEntityCreated code here,
 			// since the ghosts aren't really entities - they don't have an entindex,

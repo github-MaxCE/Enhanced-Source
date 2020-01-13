@@ -22,18 +22,14 @@ C_PortalGhostRenderable::C_PortalGhostRenderable( C_Prop_Portal *pOwningPortal, 
 {
 	m_bSourceIsBaseAnimating = (dynamic_cast<C_BaseAnimating *>(pGhostSource) != NULL);
 
-	cl_entitylist->AddNonNetworkableEntity( GetIClientUnknown() );
-	// TODO(Joshua): I don't think we want to render with viewmodels, but check later!
-	g_pClientLeafSystem->AddRenderable( this, false, pGhostSource->ComputeTranslucencyType(), RenderableModelType_t::RENDERABLE_MODEL_ENTITY );
+	RenderWithViewModels( pGhostSource->IsRenderingWithViewModels() );
+	SetModelName( pGhostSource->GetModelName() );
+	SetSize( pGhostSource->CollisionProp()->OBBMins(), pGhostSource->CollisionProp()->OBBMaxs() );
 }
 
 C_PortalGhostRenderable::~C_PortalGhostRenderable( void )
 {
 	m_pGhostedRenderable = NULL;
-	g_pClientLeafSystem->RemoveRenderable( RenderHandle() );
-	cl_entitylist->RemoveEntity( GetIClientUnknown()->GetRefEHandle() );
-
-	DestroyModelInstance();
 }
 
 void C_PortalGhostRenderable::PerFrameUpdate( void )
