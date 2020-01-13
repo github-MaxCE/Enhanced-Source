@@ -36,22 +36,22 @@ void C_PortalGhostRenderable::PerFrameUpdate( void )
 {
 	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
 
-	if( pGhostedRenderable )
+	if ( pGhostedRenderable == NULL )
+		return;
+
+	SetModelName( pGhostedRenderable->GetModelName() );
+	SetModelIndex( pGhostedRenderable->GetModelIndex() );
+	SetEffects( pGhostedRenderable->GetEffects() | EF_NOINTERP );		
+	m_flAnimTime = pGhostedRenderable->m_flAnimTime;		
+
+	if( m_bSourceIsBaseAnimating )
 	{
-		SetModelName( pGhostedRenderable->GetModelName() );
-		SetModelIndex( pGhostedRenderable->GetModelIndex() );
-		SetEffects( pGhostedRenderable->GetEffects() | EF_NOINTERP );		
-		m_flAnimTime = pGhostedRenderable->m_flAnimTime;		
+		C_BaseAnimating *pSource = (C_BaseAnimating *)pGhostedRenderable;
+		SetCycle( pSource->GetCycle() );
+		SetSequence( pSource->GetSequence() );
 
-		if( m_bSourceIsBaseAnimating )
-		{
-			C_BaseAnimating *pSource = (C_BaseAnimating *)pGhostedRenderable;
-			SetCycle( pSource->GetCycle() );
-			SetSequence( pSource->GetSequence() );
-
-			SetBody(m_nBody);
-			SetSkin(m_nSkin);
-		}
+		SetBody(m_nBody);
+		SetSkin(m_nSkin);
 	}
 
 	SetSize( pGhostedRenderable->CollisionProp()->OBBMins(), pGhostedRenderable->CollisionProp()->OBBMaxs() );
