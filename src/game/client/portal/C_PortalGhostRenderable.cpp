@@ -14,7 +14,7 @@
 ConVar portal_ghosts_disable( "portal_ghosts_disable", "0", FCVAR_NONE, "Disables rendering of ghosted objects in portal environments" );
 
 C_PortalGhostRenderable::C_PortalGhostRenderable( C_Prop_Portal *pOwningPortal, C_BaseEntity *pGhostSource, const VMatrix &matGhostTransform, float *pSharedRenderClipPlane, bool bLocalPlayer )
-: m_pGhostedRenderable( pGhostSource ), 
+: m_hGhostedRenderable( pGhostSource ), 
 	m_matGhostTransform( matGhostTransform ), 
 	m_pSharedRenderClipPlane( pSharedRenderClipPlane ),
 	m_bLocalPlayer( bLocalPlayer ),
@@ -29,21 +29,23 @@ C_PortalGhostRenderable::C_PortalGhostRenderable( C_Prop_Portal *pOwningPortal, 
 
 C_PortalGhostRenderable::~C_PortalGhostRenderable( void )
 {
-	m_pGhostedRenderable = NULL;
+	m_hGhostedRenderable = NULL;
 }
 
 void C_PortalGhostRenderable::PerFrameUpdate( void )
 {
-	if( m_pGhostedRenderable )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable )
 	{
-		SetModelName( m_pGhostedRenderable->GetModelName() );
-		SetModelIndex( m_pGhostedRenderable->GetModelIndex() );
-		SetEffects( m_pGhostedRenderable->GetEffects() | EF_NOINTERP );		
-		m_flAnimTime = m_pGhostedRenderable->m_flAnimTime;		
+		SetModelName( pGhostedRenderable->GetModelName() );
+		SetModelIndex( pGhostedRenderable->GetModelIndex() );
+		SetEffects( pGhostedRenderable->GetEffects() | EF_NOINTERP );		
+		m_flAnimTime = pGhostedRenderable->m_flAnimTime;		
 
 		if( m_bSourceIsBaseAnimating )
 		{
-			C_BaseAnimating *pSource = (C_BaseAnimating *)m_pGhostedRenderable;
+			C_BaseAnimating *pSource = (C_BaseAnimating *)pGhostedRenderable;
 			SetCycle( pSource->GetCycle() );
 			SetSequence( pSource->GetSequence() );
 
@@ -52,11 +54,11 @@ void C_PortalGhostRenderable::PerFrameUpdate( void )
 		}
 	}
 
-	SetSize(m_pGhostedRenderable->CollisionProp()->OBBMins(), m_pGhostedRenderable->CollisionProp()->OBBMaxs());
+	SetSize( pGhostedRenderable->CollisionProp()->OBBMins(), pGhostedRenderable->CollisionProp()->OBBMaxs() );
 
 	// Set position and angles relative to the object it's ghosting
-	Vector ptNewOrigin = m_matGhostTransform * m_pGhostedRenderable->GetAbsOrigin();		
-	QAngle qNewAngles = TransformAnglesToWorldSpace( m_pGhostedRenderable->GetAbsAngles(), m_matGhostTransform.As3x4() );
+	Vector ptNewOrigin = m_matGhostTransform * pGhostedRenderable->GetAbsOrigin();
+	QAngle qNewAngles = TransformAnglesToWorldSpace( pGhostedRenderable->GetAbsAngles(), m_matGhostTransform.As3x4() );
 
 	SetNetworkOrigin( ptNewOrigin );
 	SetLocalOrigin( ptNewOrigin );
@@ -70,28 +72,34 @@ void C_PortalGhostRenderable::PerFrameUpdate( void )
 
 Vector const& C_PortalGhostRenderable::GetRenderOrigin( void )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return m_ReferencedReturns.vRenderOrigin;
 
-	m_ReferencedReturns.vRenderOrigin = m_matGhostTransform * m_pGhostedRenderable->GetRenderOrigin();
+	m_ReferencedReturns.vRenderOrigin = m_matGhostTransform * pGhostedRenderable->GetRenderOrigin();
 	return m_ReferencedReturns.vRenderOrigin;
 }
 
 QAngle const& C_PortalGhostRenderable::GetRenderAngles( void )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return m_ReferencedReturns.qRenderAngle;
 
-	m_ReferencedReturns.qRenderAngle = TransformAnglesToWorldSpace( m_pGhostedRenderable->GetRenderAngles(), m_matGhostTransform.As3x4() );
+	m_ReferencedReturns.qRenderAngle = TransformAnglesToWorldSpace( pGhostedRenderable->GetRenderAngles(), m_matGhostTransform.As3x4() );
 	return m_ReferencedReturns.qRenderAngle;
 }
 
 bool C_PortalGhostRenderable::SetupBones( matrix3x4a_t *pBoneToWorldOut, int nMaxBones, int boneMask, float currentTime )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return false;
 
-	if( m_pGhostedRenderable->SetupBones( pBoneToWorldOut, nMaxBones, boneMask, currentTime ) && pBoneToWorldOut )
+	if( pGhostedRenderable->SetupBones( pBoneToWorldOut, nMaxBones, boneMask, currentTime ) && pBoneToWorldOut )
 	{
 		int nBoneCount = MIN( nMaxBones, GetModelPtr()->numbones() );
 		for( int i = 0; i != nBoneCount; ++i )
@@ -108,30 +116,42 @@ bool C_PortalGhostRenderable::SetupBones( matrix3x4a_t *pBoneToWorldOut, int nMa
 
 void C_PortalGhostRenderable::GetRenderBounds( Vector& mins, Vector& maxs )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 	{
 		mins = maxs = vec3_origin;
 		return;
 	}
 
-	m_pGhostedRenderable->GetRenderBounds( mins, maxs );
+	pGhostedRenderable->GetRenderBounds( mins, maxs );
 }
 
 void C_PortalGhostRenderable::GetRenderBoundsWorldspace( Vector& mins, Vector& maxs )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 	{
 		mins = maxs = vec3_origin;
 		return;
 	}
 
-	m_pGhostedRenderable->GetRenderBoundsWorldspace( mins, maxs );
+	pGhostedRenderable->GetRenderBoundsWorldspace( mins, maxs );
 	TransformAABB( m_matGhostTransform.As3x4(), mins, maxs, mins, maxs );
 }
 
 void C_PortalGhostRenderable::GetShadowRenderBounds( Vector &mins, Vector &maxs, ShadowType_t shadowType )
 {
-	m_pGhostedRenderable->GetShadowRenderBounds( mins, maxs, shadowType );
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
+	{
+		mins = maxs = vec3_origin;
+		return;
+	}
+
+	pGhostedRenderable->GetShadowRenderBounds( mins, maxs, shadowType );
 	TransformAABB( m_matGhostTransform.As3x4(), mins, maxs, mins, maxs );
 }
 
@@ -160,19 +180,23 @@ bool C_PortalGhostRenderable::GetShadowCastDirection( Vector *pDirection, Shadow
 
 const matrix3x4_t & C_PortalGhostRenderable::RenderableToWorldTransform()
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return m_ReferencedReturns.matRenderableToWorldTransform;
 
-	ConcatTransforms( m_matGhostTransform.As3x4(), m_pGhostedRenderable->RenderableToWorldTransform(), m_ReferencedReturns.matRenderableToWorldTransform );
+	ConcatTransforms( m_matGhostTransform.As3x4(), pGhostedRenderable->RenderableToWorldTransform(), m_ReferencedReturns.matRenderableToWorldTransform );
 	return m_ReferencedReturns.matRenderableToWorldTransform;
 }
 
 bool C_PortalGhostRenderable::GetAttachment( int number, Vector &origin, QAngle &angles )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return false;
 
-	if( m_pGhostedRenderable->GetAttachment( number, origin, angles ) )
+	if( pGhostedRenderable->GetAttachment( number, origin, angles ) )
 	{
 		origin = m_matGhostTransform * origin;
 		angles = TransformAnglesToWorldSpace( angles, m_matGhostTransform.As3x4() );
@@ -183,10 +207,12 @@ bool C_PortalGhostRenderable::GetAttachment( int number, Vector &origin, QAngle 
 
 bool C_PortalGhostRenderable::GetAttachment( int number, matrix3x4_t &matrix )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return false;
 
-	if( m_pGhostedRenderable->GetAttachment( number, matrix ) )
+	if( pGhostedRenderable->GetAttachment( number, matrix ) )
 	{
 		ConcatTransforms( m_matGhostTransform.As3x4(), matrix, matrix );
 		return true;
@@ -196,10 +222,12 @@ bool C_PortalGhostRenderable::GetAttachment( int number, matrix3x4_t &matrix )
 
 bool C_PortalGhostRenderable::GetAttachment( int number, Vector &origin )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return false;
 
-	if( m_pGhostedRenderable->GetAttachment( number, origin ) )
+	if( pGhostedRenderable->GetAttachment( number, origin ) )
 	{
 		origin = m_matGhostTransform * origin;
 		return true;
@@ -209,11 +237,13 @@ bool C_PortalGhostRenderable::GetAttachment( int number, Vector &origin )
 
 bool C_PortalGhostRenderable::GetAttachmentVelocity( int number, Vector &originVel, Quaternion &angleVel )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+	
+	if( pGhostedRenderable == NULL )
 		return false;
 
 	Vector ghostVel;
-	if( m_pGhostedRenderable->GetAttachmentVelocity( number, ghostVel, angleVel ) )
+	if( pGhostedRenderable->GetAttachmentVelocity( number, ghostVel, angleVel ) )
 	{
 		Vector3DMultiply( m_matGhostTransform, ghostVel, originVel );
 		Vector3DMultiply( m_matGhostTransform, *(Vector*)( &angleVel ), *(Vector*)( &angleVel ) );
@@ -255,8 +285,8 @@ int C_PortalGhostRenderable::DrawModel( int flags, const RenderableInstance_t& i
 	}
 	else
 	{
-		render->DrawBrushModel( m_pGhostedRenderable, 
-								(model_t *)m_pGhostedRenderable->GetModel(), 
+		render->DrawBrushModel( m_hGhostedRenderable, 
+								(model_t *)m_hGhostedRenderable->GetModel(), 
 								GetRenderOrigin(), 
 								GetRenderAngles(), 
 								flags & STUDIO_TRANSPARENCY ? true : false );
@@ -269,15 +299,22 @@ int C_PortalGhostRenderable::DrawModel( int flags, const RenderableInstance_t& i
 
 bool C_PortalGhostRenderable::OnInternalDrawModel( ClientModelRenderInfo_t *pInfo )
 {
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+	
+	if( pGhostedRenderable == NULL )
+		return false;
+
 	// TODO: account for m_pGhostedRenderable having a custom lighting origin
-	pInfo->pLightingOrigin = &(m_pGhostedRenderable->GetAbsOrigin());
+	pInfo->pLightingOrigin = &(pGhostedRenderable->GetAbsOrigin());
 	return true;
 }
 
 ModelInstanceHandle_t C_PortalGhostRenderable::GetModelInstance()
 {
-	if ( m_pGhostedRenderable )
-		return m_pGhostedRenderable->GetModelInstance();
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if ( pGhostedRenderable )
+		return pGhostedRenderable->GetModelInstance();
 
 	return BaseClass::GetModelInstance();
 }
@@ -319,10 +356,12 @@ int C_PortalGhostRenderable::GetBody()
 
 void C_PortalGhostRenderable::GetColorModulation( float* color )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return;
 
-	return m_pGhostedRenderable->GetColorModulation( color );
+	return pGhostedRenderable->GetColorModulation( color );
 }
 
 /*ShadowType_t C_PortalGhostRenderable::ShadowCastType()
@@ -335,10 +374,12 @@ void C_PortalGhostRenderable::GetColorModulation( float* color )
 
 int C_PortalGhostRenderable::LookupAttachment( const char *pAttachmentName )
 {
-	if( m_pGhostedRenderable == NULL )
+	C_BaseEntity* pGhostedRenderable = m_hGhostedRenderable;
+
+	if( pGhostedRenderable == NULL )
 		return -1;
 
-	return m_pGhostedRenderable->LookupAttachment( pAttachmentName );
+	return pGhostedRenderable->LookupAttachment( pAttachmentName );
 }
 
 /*int C_PortalGhostRenderable::GetSkin()

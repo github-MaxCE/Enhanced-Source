@@ -18,7 +18,7 @@
 class C_PortalGhostRenderable : public C_BaseAnimating//IClientRenderable, public IClientUnknown
 {
 public:
-	C_BaseEntity *m_pGhostedRenderable; //the renderable we're transforming and re-rendering
+	EHANDLE m_hGhostedRenderable; //the renderable we're transforming and re-rendering
 	
 	VMatrix m_matGhostTransform;
 	float *m_pSharedRenderClipPlane; //shared by all portal ghost renderables within the same portal

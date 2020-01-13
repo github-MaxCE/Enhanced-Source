@@ -389,7 +389,7 @@ bool C_Prop_Portal::Simulate()
 			int j;
 			for( j = m_GhostRenderables.Count(); --j >= 0; )
 			{
-				if( pRenderable == m_GhostRenderables[j]->m_pGhostedRenderable )
+				if( pRenderable == m_GhostRenderables[j]->m_hGhostedRenderable )
 				{
 					bStillInUse[j] = true;
 					m_GhostRenderables[j]->PerFrameUpdate();
