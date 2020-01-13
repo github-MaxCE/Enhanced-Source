@@ -352,6 +352,8 @@ int C_Portal_Player::GetIDTarget() const
 //-----------------------------------------------------------------------------
 void C_Portal_Player::UpdateIDTarget()
 {
+	ACTIVE_SPLITSCREEN_PLAYER_GUARD_ENT( this );
+
 	if ( !IsLocalPlayer() )
 		return;
 
@@ -363,11 +365,10 @@ void C_Portal_Player::UpdateIDTarget()
 		GetObserverMode() == OBS_MODE_DEATHCAM )
 		return;
 
-	// TODO(Joshua): Does this work properly with splitscreen?
 	trace_t tr;
 	Vector vecStart, vecEnd;
-	VectorMA( MainViewOrigin(0), 1500, MainViewForward(0), vecEnd );
-	VectorMA( MainViewOrigin(0), 10,   MainViewForward(0), vecStart );
+	VectorMA( MainViewOrigin( GET_ACTIVE_SPLITSCREEN_SLOT() ), 1500, MainViewForward( GET_ACTIVE_SPLITSCREEN_SLOT() ), vecEnd );
+	VectorMA( MainViewOrigin( GET_ACTIVE_SPLITSCREEN_SLOT() ), 10,   MainViewForward( GET_ACTIVE_SPLITSCREEN_SLOT() ), vecStart );
 	UTIL_TraceLine( vecStart, vecEnd, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
 
 	if ( !tr.startsolid && tr.DidHitNonWorldEntity() )
