@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose:		Player for .
 //
@@ -227,10 +227,10 @@ void C_PortalRagdoll::CreatePortalRagdoll()
 		Interp_Reset( varMap );
 
 		m_nBody = pPlayer->GetBody();
+		CopySequenceTransitions(pPlayer);
 		SetModelIndex( m_nModelIndex );	
 		// Make us a ragdoll..
-		// TODO(Joshua): Is this right?
-		CreateClientRagdoll();
+		m_bClientSideRagdoll = true;
 
 		matrix3x4a_t boneDelta0[MAXSTUDIOBONES];
 		matrix3x4a_t boneDelta1[MAXSTUDIOBONES];
