@@ -38,7 +38,6 @@ $Project "Client (Template)"
 			$File	"template\c_sdk_player.cpp"
 			$File	"template\c_weapon__stubs.cpp"
 			
-			$File	"template\hud_crosshair_template.cpp"
 			$File	"template\hud_damageindicator.cpp"
 			$File	"template\hud_developer.cpp"
 			$File	"template\hud_weaponselection.cpp"
