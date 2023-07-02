@@ -1450,8 +1450,6 @@ void CUtlRBTree<T, I, L, M>::SetLessFunc( const typename CUtlRBTree<T, I, L, M>:
 template < class T, class I, typename L, class M > 
 void CUtlRBTree<T, I, L, M>::FindInsertionPosition( T const &insert, I &parent, bool &leftchild )
 {
-	Assert( m_LessFunc );
-
 	/* find where node belongs */
 	I current = m_Root;
 	parent = InvalidIndex();
@@ -1531,8 +1529,6 @@ I CUtlRBTree<T, I, L, M>::InsertIfNotFound( T const &insert )
 template < class T, class I, typename L, class M > 
 I CUtlRBTree<T, I, L, M>::Find( T const &search ) const
 {
-	Assert( m_LessFunc );
-
 	I current = m_Root;
 	while (current != InvalidIndex()) 
 	{

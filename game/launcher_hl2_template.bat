@@ -1,1 +1,0 @@
-@start swarm.exe -game hl2_template

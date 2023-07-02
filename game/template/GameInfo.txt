@@ -39,9 +39,6 @@
 			// Look for our content under our gamepath. pak01_dir will be read first, then loose files.
 			Game				|gameinfo_path|.
 			
-			// This has some resources.
-			Game				template_additional_content
-
 			// Like the Source 2006 base, you need to include this folder as it has ALL of the content that is mostly shared.
 			Game				core
 
